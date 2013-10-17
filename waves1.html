@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+  <h1>Wave Test</h1>
+
+  <script>
+var keymap = [[97,'a',0],[115,'s',1],[100,'d',2],[102,'f',3],[103,'g',4],[104,'h',5],[106,'j',6],[107,'k',7],[108,'l',8],[59,';',9]];
+
+var toy = {65:1, 83:2,68:3,70:4,71:5,72:6,74:7,75:8,76:9,59:10};
+
+var context = new webkitAudioContext();
+var osc = context.createOscillator();
+
+var osclist = new Array(toy.length);
+
+function mapkey(asc) {
+    if (toy[asc] >= 1 && toy[asc] <= 10) {
+	return toy[asc];
+    } else {
+	return 0;
+    }
+}
+
+function handleup(e) {
+    if (toy[e.which] != undefined) {
+	curosc = osclist[e.which];
+	curosc.noteOff(0);
+    } 
+};
+
+function handledown(e) {
+
+    if (toy[e.which] != undefined) {
+	// we have to re-create the oscillator after calling noteOff. Why?
+	curosc = osclist[e.which];
+	osc = context.createOscillator();
+
+	osc.type = 1; // sine
+	osc.frequency.value = 220*Math.pow(1.12,toy[e.which]);
+	osc.connect(context.destination);
+	osc.noteOn(0);
+	if (curosc != undefined) curosc.noteOff(0);
+	osclist[e.which] = osc;
+    } 
+};
+
+document.onkeydown = handledown;
+document.onkeyup = handleup;
+
+osc.type = 1; // sine
+osc.connect(context.destination);
+
+  </script>
+
+</html>
