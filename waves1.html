@@ -5,6 +5,7 @@
   <script>
     var keymap = [[97,'a',0],[115,'s',1],[100,'d',2],[102,'f',3],[103,'g',4],[104,'h',5],[106,'j',6],[107,'k',7],[108,'l',8],[59,';',9]];
 
+var down = [];
 var times = [];
 var time_index = 0;
 
@@ -73,9 +74,13 @@ function play(keynum)
 
 function handledown(e) {
 
-    if (toy[e.which] != undefined) {
-        play(e.which);	
-	times.push([new Date().getTime(), e.which]);
+    if (toy[e.which] != undefined ) {
+      if (!down[e.which]) 
+      {
+	  play(e.which);	
+	  times.push([new Date().getTime(), e.which]);
+	  down[e.which] = true;
+      }
     } 
 };
 
@@ -84,6 +89,7 @@ function handleup(e) {
 	curosc = osclist[e.which];
 	curosc.noteOff(0);
 	times.push([new Date().getTime(), -e.which]);
+	down[e.which] = false;
     } 
 };
 
