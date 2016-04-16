@@ -1,7 +1,6 @@
 <!doctype html>
 <html>
   <h1>Wave Test</h1>
-
   <script>
     var keymap = [[97,'a',0],[115,'s',1],[100,'d',2],[102,'f',3],[103,'g',4],[104,'h',5],[106,'j',6],[107,'k',7],[108,'l',8],[59,';',9]];
 
@@ -20,7 +19,7 @@ var toy = {65:1, 87:1.5,
 	   76:8, 79:8.5,
 	   59:9};
 
-var context = new webkitAudioContext();
+var context = new window.AudioContext();
 var osc = context.createOscillator();
 
 var osclist = new Array(toy.length);
@@ -55,20 +54,20 @@ function fake() {
 function unplay(keynum)
 {
     curosc = osclist[keynum];
-    curosc.noteOff(0);
+    curosc.stop(0);
 }
 
 function play(keynum)
 {
-    // we have to re-create the oscillator after calling noteOff. Why?
+    // we have to re-create the oscillator after calling stop. Why?
     curosc = osclist[keynum];
     osc = context.createOscillator();
 
-    osc.type = 1; // sine
+    osc.type = 'sine';
     osc.frequency.value = 220*Math.pow(1.12,toy[keynum]);
     osc.connect(context.destination);
-    osc.noteOn(0);
-    if (curosc != undefined) curosc.noteOff(0);
+    osc.start(0);
+    if (curosc != undefined) curosc.stop(0);
     osclist[keynum] = osc;
 };
 
@@ -87,7 +86,7 @@ function handledown(e) {
 function handleup(e) {
     if (toy[e.which] != undefined) {
 	curosc = osclist[e.which];
-	curosc.noteOff(0);
+	curosc.stop(0);
 	times.push([new Date().getTime(), -e.which]);
 	down[e.which] = false;
     } 
@@ -96,7 +95,7 @@ function handleup(e) {
 document.onkeydown = handledown;
 document.onkeyup = handleup;
 
-osc.type = 1; // sine
+osc.type = 'sine';
 osc.connect(context.destination);
 
   </script>
